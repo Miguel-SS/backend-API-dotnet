@@ -3,6 +3,7 @@ using APIBackend.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.Metadata;
 
 namespace APIBackend.Controllers
 {
@@ -18,14 +19,13 @@ namespace APIBackend.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Patient>>> get_patients()
+        public async Task<ActionResult<IEnumerable<Patient>>> GetPatients()
         {
             return await _context.Patient.ToListAsync();
         }
 
-        [HttpGet]
-        [Route("id")]
-        public async Task<ActionResult<Patient>> get_patient(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Patient>> GetPatient(int id)
         {
             var patient = await _context.Patient.FindAsync(id);
 
@@ -33,7 +33,7 @@ namespace APIBackend.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Patient>> post_patient(Patient patient)
+        public async Task<ActionResult<Patient>> PostPatient(Patient patient)
         {
             if (patient == null)
             {
@@ -51,13 +51,48 @@ namespace APIBackend.Controllers
                     throw;
                 }
 
-                return CreatedAtAction("Patient created", patient);
+                return CreatedAtAction("Patient created", new { id = patient.Id },patient);
             }
             
         }
 
+        [HttpPut]
+        public async Task<IActionResult> PutPatient(Patient patient)
+        {
+
+            _context.Entry(patient).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch(DbUpdateConcurrencyException)
+            {
+                throw;
+            }
+
+            return NoContent();
+        }
+
+        //[HttpPatch]
+        //public async Task<IActionResult> PatchPatient(Patient patient)
+        //{
+        //    _context.Entry(patient).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        throw;
+        //    }
+
+        //    return NoContent();
+        //}
+
         [HttpDelete("{id}")]
-        public async Task<IActionResult> delete_patient(int id)
+        public async Task<IActionResult> DeletePatient(int id)
         {
             var patient = await _context.Patient.FindAsync(id);
 
