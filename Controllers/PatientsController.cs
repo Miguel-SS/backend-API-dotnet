@@ -38,28 +38,28 @@ namespace APIBackend.Controllers
             if (patient == null)
             {
                 return BadRequest();
-            } else
+            }
+            else
             {
                 _context.Patient.Add(patient);
                 try
                 {
                     await _context.SaveChangesAsync();
                 }
-                catch(DbUpdateException)
+                catch (DbUpdateException)
                 {
                     // catch some exception
                     throw;
                 }
 
-                return CreatedAtAction("Patient created", new { id = patient.Id },patient);
+                return CreatedAtAction("Patient created", new { id = patient.Id }, patient);
             }
-            
+
         }
 
         [HttpPut]
         public async Task<IActionResult> PutPatient(Patient patient)
         {
-
             _context.Entry(patient).State = EntityState.Modified;
 
             try
@@ -74,9 +74,21 @@ namespace APIBackend.Controllers
             return NoContent();
         }
 
-        //[HttpPatch]
-        //public async Task<IActionResult> PatchPatient(Patient patient)
+        // Patch method maybe comming soon
+        // this method partially or completely update an object in the db
+        //[HttpPatch("{id}")]
+        //public async Task<IActionResult> PatchPatient(int id, Patient patient)
         //{
+        //    var old_patient = await _context.Patient.FindAsync(id);
+
+        //    foreach (var item in patient.GetType().GetProperties())
+        //    {
+
+        //        Console.WriteLine(item.GetValue(patient));
+
+
+        //    }
+
         //    _context.Entry(patient).State = EntityState.Modified;
 
         //    try
